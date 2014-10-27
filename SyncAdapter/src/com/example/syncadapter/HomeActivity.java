@@ -3,6 +3,7 @@ package com.example.syncadapter;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,8 +12,8 @@ import com.example.syncadapter.tools.Logging;
 
 public class HomeActivity extends Activity {
 
-	private static final String ACCOUNT_NAME = "MyAccount";
-	private static final String ACCOUNT_TYPE = "syncadapter.example.com";
+	private static final String ACCOUNT_NAME = "my_account";
+	private static final int ACCOUNT_TYPE_ID = R.string.account_type;
 	private static final String AUTHORITY = "com.example.syncadapter.provider";
 
 	private Account account;
@@ -24,15 +25,15 @@ public class HomeActivity extends Activity {
 		
 		Logging.logEntrance();
 
-		account = addNewSyncAccount();
+		account = addNewSyncAccount(this);
 	}
 
-	private Account addNewSyncAccount() {
-		Account newAccount = new Account(ACCOUNT_NAME, ACCOUNT_TYPE);
+	private Account addNewSyncAccount(Context context) {
+		Account newAccount = new Account(ACCOUNT_NAME, getString(ACCOUNT_TYPE_ID));
 
-		AccountManager accountManager = (AccountManager) this.getSystemService(ACCOUNT_SERVICE);
+		AccountManager accountManager = (AccountManager) context.getSystemService(ACCOUNT_SERVICE);
 		boolean added = accountManager.addAccountExplicitly(newAccount, null, null);
-		
+
 		if (!added) {
 			Logging.logEntrance("Can't add account", new Throwable());
 		}

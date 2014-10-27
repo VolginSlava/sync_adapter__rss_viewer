@@ -5,7 +5,7 @@
 	android:versionName="1.0" >
 
 	<uses-sdk
-		android:minSdkVersion="11"
+		android:minSdkVersion="8"
 		android:targetSdkVersion="21" />
 	
 	<uses-permission android:name="android.permission.INTERNET"/>
@@ -29,16 +29,7 @@
 			</intent-filter>
 		</activity>
 		
-		<service android:name="com.example.syncadapter.MyAuthenticatorService" >
-			<intent-filter>
-				<action android:name="android.accounts.MyAuthenticator" />
-			</intent-filter>
-
-			<meta-data
-				android:name="android.accounts.MyAuthenticator"
-				android:resource="@xml/authenticator" />
-		</service>
-
+		
 		<provider
 			android:name="com.example.syncadapter.MyContentProvider"
 			android:authorities="com.example.syncadapter.provider"
@@ -47,9 +38,22 @@
 		</provider>
 
 		<service
+			android:name="com.example.syncadapter.MyAuthenticatorService" >
+			
+			<intent-filter>
+				<action android:name="android.accounts.MyAuthenticatorService" />
+			</intent-filter>
+
+			<meta-data
+				android:name="android.accounts.MyAuthenticatorService"
+				android:resource="@xml/authenticator" />
+		</service>
+
+		<service
 			android:name="com.example.syncadapter.MySyncService"
 			android:exported="true"
 			android:process=":sync" >
+			
 			<intent-filter>
 				<action android:name="android.context.SyncAdapter" />
 			</intent-filter>
