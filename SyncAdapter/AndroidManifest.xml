@@ -22,6 +22,17 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
+		
+		<service 
+			android:name="com.example.syncadapter.MyAuthenticatorService" >
+			<intent-filter>
+				<action android:name="android.accounts.MyAuthenticator"/>
+			</intent-filter>
+			
+			<meta-data 
+				android:name="android.accounts.MyAuthenticator"
+				android:resource="@xml/authenticator" />
+		</service>
 	</application>
 
 </manifest>
