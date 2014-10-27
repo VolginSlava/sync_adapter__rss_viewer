@@ -6,7 +6,7 @@
 
 	<uses-sdk
 		android:minSdkVersion="11"
-		android:targetSdkVersion="11" />
+		android:targetSdkVersion="21" />
 
 	<application
 		android:allowBackup="true"
@@ -33,6 +33,15 @@
 				android:name="android.accounts.MyAuthenticator"
 				android:resource="@xml/authenticator" />
 		</service>
+		
+		<provider 
+			android:name="com.example.syncadapter.MyContentProvider"
+			android:authorities="com.example.syncadapter.provider"
+			android:exported="false"
+			android:syncable="true"
+			>
+			
+		</provider>
 	</application>
 
 </manifest>
