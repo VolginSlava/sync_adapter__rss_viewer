@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import java.io.Serializable;
@@ -33,6 +34,7 @@ public class NewsListFragment extends Fragment {
 	
 	private ListView listView;
 	private List<NewsData> listItems;
+	private OnItemClickListener listener;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -69,5 +71,14 @@ public class NewsListFragment extends Fragment {
 		super.onSaveInstanceState(outState);
 		Logging.logEntrance();
 		outState.putSerializable(LIST_ITEMS_KEY, (Serializable) listItems);
+	}
+
+	public void setOnItemClickListener(OnItemClickListener listener) {
+		this.listener = listener;
+		if (listener != null) {
+			if (listView != null) {
+				listView.setOnItemClickListener(listener);
+			}
+		}
 	}
 }

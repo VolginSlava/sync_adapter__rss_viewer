@@ -3,12 +3,17 @@ package com.example.syncadapter;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -22,7 +27,7 @@ import com.example.syncadapter.rssparser.RssParser;
 import com.example.syncadapter.rssparser.RssParser.Fields;
 import com.example.syncadapter.tools.Logging;
 
-public class HomeActivity extends Activity {
+public class HomeActivity extends Activity implements OnItemClickListener {
 
 	private static final String ACCOUNT_NAME = "my_account";
 	private static final int ACCOUNT_TYPE_ID = R.string.account_type;
@@ -47,46 +52,46 @@ public class HomeActivity extends Activity {
 		
 		Logging.logEntrance();
 
-		Fragment fragment = getFragmentManager().findFragmentById(R.id.news_list_fragment);
-		if (fragment != null) {
-			newsListFragment = (NewsListFragment) fragment;
+		newsListFragment = (NewsListFragment) getFragmentManager().findFragmentById(R.id.news_list_fragment);
+		if (newsListFragment != null) {
+			newsListFragment.setOnItemClickListener(this);
 		}
-		Logging.logEntrance("fragment: " + fragment);
 
 		// account = addNewSyncAccount(this);
 		
 		
+		if (savedInstanceState == null) {
+			new Thread() {
+				@Override
+				public void run() {
+					try {
+						RssParser p = new RssParser(URL.openConnection().getInputStream());
+						final ArrayList<NewsData> ar = new ArrayList<NewsData>();
+						String res;
 
-		new Thread() {
-			@Override
-			public void run() {
-				try {
-					RssParser p = new RssParser(URL.openConnection().getInputStream());
-					final ArrayList<NewsData> ar = new ArrayList<NewsData>();
-					String res;
+						while ((res = p.findWithinHorizon()) != null) {
+							Map<Fields, String> match = p.match();
+							NewsData data = new NewsData();
 
-					while ((res = p.findWithinHorizon()) != null) {
-						Map<Fields, String> match = p.match();
-						NewsData data = new NewsData();
+							data.setTitle(match.get(RssParser.Fields.TITLE));
+							data.setUrl(match.get(RssParser.Fields.LINK));
 
-						data.setTitle(match.get(RssParser.Fields.TITLE));
-						data.setUrl(match.get(RssParser.Fields.LINK));
-
-						ar.add(data);
-					}
-					Log.w("", "Ready");
-
-					HomeActivity.this.runOnUiThread(new Runnable() {
-
-						public void run() {
-							newsListFragment.updateListItems(ar);
+							ar.add(data);
 						}
-					});
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			};
-		}.start();
+						Log.w("", "Ready");
+
+						HomeActivity.this.runOnUiThread(new Runnable() {
+
+							public void run() {
+								newsListFragment.updateListItems(ar);
+							}
+						});
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				};
+			}.start();
+		}
 	}
 
 	private Account addNewSyncAccount(Context context) {
@@ -111,6 +116,29 @@ public class HomeActivity extends Activity {
 		}
 		return added ? newAccount : null;
 	}
+
+	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		NewsData data = (NewsData) parent.getItemAtPosition(position);
+		Logging.logEntrance(data.toString());
+
+		Intent urlIntent = getUrlIntent(data);
+
+		if (urlIntent != null) {
+			startActivity(Intent.createChooser(urlIntent, "sdlfkghl! sdful D dlfu?"));
+		} else {
+			String msg = "no url";
+			Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+		}
+	}
+
+	private Intent getUrlIntent(NewsData data) {
+		Logging.logEntrance();
+		if (data == null || data.getUrl() == null) {
+			return null;
+		}
+		return new Intent(Intent.ACTION_VIEW, Uri.parse(data.getUrl()));
+	}
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
