@@ -1,3 +1,4 @@
+package com.example.syncadapter.rssparser;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,7 +8,7 @@ import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 
-public class MyParser {
+public class RssParser {
 
 	public static enum Fields {
 		CATEGORIES, MEDIA_CONTENT, MEDIA_THUMBNAIL, LINK, DESCRIPTION, DC_CREATOR, AUTHOR, PUB_DATE, TITLE
@@ -17,11 +18,11 @@ public class MyParser {
 	private Scanner scanner;
 
 
-	public MyParser(String str) {
+	public RssParser(String str) {
 		scanner = new Scanner(str);
 	}
 
-	public MyParser(InputStream in) {
+	public RssParser(InputStream in) {
 		scanner = new Scanner(in);
 	}
 

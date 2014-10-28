@@ -8,9 +8,20 @@
 	android:paddingTop="@dimen/activity_vertical_margin"
 	tools:context="com.example.syncadapter.HomeActivity" >
 
-	<TextView
+	<TextView 
+		android:id="@+id/hello_world"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="@string/hello_world" />
+		android:text="@string/hello_world"
+		/>
+	
+	<fragment 
+		android:id="@+id/news_list_fragment"
+		android:name="com.example.syncadapter.fragments.NewsListFragment"
+		
+		android:layout_below="@id/hello_world"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		/>
 
 </RelativeLayout>
